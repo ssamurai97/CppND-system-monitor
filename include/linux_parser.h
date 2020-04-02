@@ -23,6 +23,7 @@ float MemoryUtilization();
 long UpTime();
 std::vector<int> Pids();
 int TotalProcesses();
+std::string GetValueFromProcStat(std::string key);
 int RunningProcesses();
 std::string OperatingSystem();
 std::string Kernel();
