@@ -3,6 +3,7 @@
 #include <string>
 #include <vector>
 #include<iomanip>
+#include<sstream>
 
 #include "linux_parser.h"
 
@@ -77,7 +78,7 @@ string LinuxParser::Kernel() {
 
   if(ifs.is_open()){
     while(std::getline(ifs, line)){
-    std::istringstream linestream{line};
+    std::istringstream linestream(line);
     linestream>>key >> value;
     if(key == "MemToTal:"){
       memTotal = std::stof(value);
@@ -132,7 +133,7 @@ string LinuxParser::Kernel() {
 
     if(ifs.is_open()){
       std::getline(ifs, line);
-      std::istringstream linestream{line};
+      std::istringstream linestream(line);
       int i{0};
       while(linestream >> value){
         if(i >= 13 && i <= 16){
@@ -142,7 +143,8 @@ string LinuxParser::Kernel() {
       }
     }
 
-   return total; }
+   return total; 
+   }
 
 // TODO: Read and return the number of active jiffies for the system
 [[nodiscard]]long LinuxParser::ActiveJiffies() { 
@@ -164,14 +166,15 @@ long LinuxParser::IdleJiffies() {
 
 // TODO: Read and return CPU utilization
 vector<string> LinuxParser::CpuUtilization() {
-  string value{}, line{};
+  string value{}; 
+  string line{};
 
   vector<string>cpuValues{};
   std::ifstream ifs{kProcDirectory + kStatFilename};
 
   if(ifs.is_open()){
     std::getline(ifs,line);
-    std::istringstream linestream{line};
+    std::istringstream linestream(line);
 
     while(linestream >> value ){
       if(value != "cpu"){
@@ -189,11 +192,11 @@ vector<string> LinuxParser::CpuUtilization() {
 [[nodiscard]] string LinuxParser::GetValueFromProcStat(string keyToLook){
   string key {}, value {}, line {};
 
-  std::ifstream ifs{kProcDirectory + kStatusFilename};
+  std::ifstream ifs{kProcDirectory + kStatFilename};
 
   if(ifs.is_open()){
     while(std::getline(ifs, line)){
-      std::istringstream linestream{line};
+      std::istringstream linestream(line);
       linestream >> key >> value;
       if(key == keyToLook){
         return value;
@@ -202,10 +205,19 @@ vector<string> LinuxParser::CpuUtilization() {
   }
   return value;
 }
+
+
+string LinuxParser::StatsPid(int pid){
+  std::ifstream ifs{kProcDirectory + to_string(pid) + kStatFilename};
+  string line {};
+  std::getline(ifs, line);
+
+  return line;
+}
 // TODO: Read and return the total number of processes
 int LinuxParser::TotalProcesses() {
   
-  auto value = LinuxParser::GetValueFromProcStat("process");
+  auto value = LinuxParser::GetValueFromProcStat("processes");
 
   if(value !=""){
     return std::stoi(value);
@@ -273,7 +285,7 @@ string LinuxParser::Uid(int pid) {
 
   if(ifs.is_open()){
     while (std::getline(ifs, line)){
-      std::istringstream linestream{line};
+      std::istringstream linestream(line);
       linestream >> key >> value;
       if(key == "Uid:"){
         return value;
@@ -296,11 +308,11 @@ string LinuxParser::Uid(int pid) {
   if(ifs.is_open()){
     while (std::getline(ifs, line)){
       std::replace(line.begin(), line.end(), ':', ' ');
-      std::istringstream linestream{line};
+      std::istringstream linestream(line);
 
       linestream >> key >> x >> value;
       if(value == uid){
-        return value;
+        return key;
       }
     }
     
@@ -318,7 +330,7 @@ long LinuxParser::UpTime(int pid) {
 
   if(ifs.is_open()){
     std::getline(ifs, line);
-    std::istringstream linestream{line};
+    std::istringstream linestream(line);
 
     auto i {0};
     while(linestream >> value){

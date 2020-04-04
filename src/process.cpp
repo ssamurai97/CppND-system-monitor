@@ -49,3 +49,4 @@ bool Process::operator<(Process const& a) const {
     
     return std::stol(LinuxParser::Ram(pid_)) > std::stol(LinuxParser::Ram(a.pid_));
     }
+    
