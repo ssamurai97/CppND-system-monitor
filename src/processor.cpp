@@ -4,14 +4,14 @@
 
 // TODO: Return the aggregate CPU utilization
 [[nodiscard]] float Processor::Utilization() {
-    auto totalJiffiesStart = LinuxParser::Jiffies();
-    auto activeJiffiesStart = LinuxParser::ActiveJiffies();
+    totalJiffiesStart = LinuxParser::Jiffies();
+    activeJiffiesStart= LinuxParser::ActiveJiffies();
 
     usleep(100000);
 
-    auto totalJiffiesEnd = LinuxParser::Jiffies();
+     totalJiffiesEnd = LinuxParser::Jiffies();
 
-    auto activeJiffiesEnd = LinuxParser::ActiveJiffies();
+     activeJiffiesEnd = LinuxParser::ActiveJiffies();
 
 
     auto totalDelta = totalJiffiesEnd - totalJiffiesStart;

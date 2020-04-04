@@ -326,7 +326,7 @@ string LinuxParser::Uid(int pid) {
 long LinuxParser::UpTime(int pid) { 
   string line {}, value {};
 
-  std::ifstream ifs{kProcDirectory + to_string(pid) + kStatusFilename};
+  std::ifstream ifs{kProcDirectory + to_string(pid) + kStatFilename};
 
   if(ifs.is_open()){
     std::getline(ifs, line);
