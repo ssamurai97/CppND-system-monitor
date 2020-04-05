@@ -37,13 +37,13 @@ string LinuxParser::OperatingSystem() {
 
 // DONE: An example of how to read data from the filesystem
 string LinuxParser::Kernel() {
-  string os, kernel;
+  string os,version, kernel;
   string line;
   std::ifstream stream(kProcDirectory + kVersionFilename);
   if (stream.is_open()) {
     std::getline(stream, line);
     std::istringstream linestream(line);
-    linestream >> os >> kernel;
+    linestream >> os >>version>> kernel;
   }
   return kernel;
 }
@@ -102,7 +102,7 @@ string LinuxParser::Kernel() {
    std::ifstream ifs{kProcDirectory + kUptimeFilename};
    if(ifs.is_open()){
      std::getline(ifs, line);
-     std::istringstream linestream{line};
+     std::istringstream linestream(line);
 
      linestream>>uptime;
 
@@ -161,7 +161,7 @@ long LinuxParser::IdleJiffies() {
     total += stol(cpuUtilization[i]);
   }
 
-  return 0;
+  return total;
    }
 
 // TODO: Read and return CPU utilization
@@ -247,7 +247,7 @@ string LinuxParser::Command(int pid) {
     std::getline(ifs, cmd);
     return cmd;
   }
-  return string(); 
+  return cmd; 
   
   }
 
@@ -294,11 +294,10 @@ string LinuxParser::Uid(int pid) {
     }
     
   }
-  return string(); 
+  return value; 
   }
 
-// TODO: Read and return the user associated with a process
-// REMOVE: [[maybe_unused]] once you define the function
+// Read and return the user associated with a process
 [[nodiscard]]string LinuxParser::User(int pid) { 
   
   auto uid = LinuxParser::Uid(pid);
@@ -317,11 +316,11 @@ string LinuxParser::Uid(int pid) {
     }
     
   }
-  return string(); 
+  return key; 
   
   }
 
-// TODO: Read and return the uptime of a process
+// Read and return the uptime of a process
 // REMOVE: [[maybe_unused]] once you define the function
 long LinuxParser::UpTime(int pid) { 
   string line {}, value {};
